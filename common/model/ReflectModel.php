@@ -154,7 +154,7 @@ class ReflectModel extends Database {
         return $this->insertObjectWithCheck($obj, false);
     }
 
-    private function insertObjectWithCheck($obj, $donotcheck) {
+    protected function insertObjectWithCheck($obj, $donotcheck) {
         $starttime = microtime(true);
         if (!$donotcheck) {
             $existing = $this->checkExisting($obj->{$this->dbid});
@@ -197,7 +197,7 @@ class ReflectModel extends Database {
         return $this->updateObjectWithCheck($obj, false);
     }
 
-    private function updateObjectWithCheck($obj, $donotcheck) {
+    protected function updateObjectWithCheck($obj, $donotcheck = false, $noarrayupdate = false) {
         $starttime = microtime(true);
         if (!$donotcheck) {
             $existing = $this->checkExisting($obj->{$this->dbid});
@@ -233,7 +233,9 @@ class ReflectModel extends Database {
         if (!$result) {
             throw New Exception("Unable to update object.");
         }
-        $this->storeArrays($obj);
+        if(!$noarrayupdate) {
+            $this->storeArrays($obj);
+        }
         $this->debuginfo("updateObjectWithCheck ".(microtime(true)-$starttime));
         return $result;
     }
